@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Favicon Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #0ea5e9;
+        }
+        canvas {
+            border: 2px solid #ddd;
+            margin: 20px 0;
+            display: block;
+        }
+        button {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0284c7;
+        }
+        .preview {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .info {
+            background: #e0f2fe;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Favicon Generator</h1>
+        
+        <div class="info">
+            <strong>Instructions:</strong>
+            <ol>
+                <li>The logo.png will be automatically loaded</li>
+                <li>Click "Generate Favicon" to create different sizes</li>
+                <li>Right-click each canvas and "Save image as..."</li>
+                <li>Save the 32x32 version as <strong>favicon.ico</strong> (or use an online converter)</li>
+            </ol>
+        </div>
+
+        <div class="preview">
+            <div>
+                <h3>Original Logo</h3>
+                <img id="originalImg" src="logo.png" style="max-width: 200px; border: 2px solid #ddd; border-radius: 8px;">
+            </div>
+        </div>
+
+        <button onclick="generateFavicons()">Generate Favicon Sizes</button>
+
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function generateFavicons() {
+            const img = document.getElementById('originalImg');
+            const output = document.getElementById('output');
+            output.innerHTML = '<h2>Generated Favicons:</h2>';
+
+            const sizes = [
+                { size: 16, name: 'favicon-16x16.png' },
+                { size: 32, name: 'favicon-32x32.png (Use this for favicon.ico)' },
+                { size: 48, name: 'favicon-48x48.png' },
+                { size: 64, name: 'favicon-64x64.png' }
+            ];
+
+            sizes.forEach(({ size, name }) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                
+                // Enable image smoothing for better quality
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                
+                // Draw the image scaled down
+                ctx.drawImage(img, 0, 0, size, size);
+                
+                const container = document.createElement('div');
+                container.style.margin = '20px 0';
+                container.style.padding = '15px';
+                container.style.background = '#f8fafc';
+                container.style.borderRadius = '8px';
+                
+                const title = document.createElement('h3');
+                title.textContent = `${size}x${size}px - ${name}`;
+                title.style.marginTop = '0';
+                
+                const preview = document.createElement('div');
+                preview.style.display = 'flex';
+                preview.style.alignItems = 'center';
+                preview.style.gap = '20px';
+                
+                canvas.style.border = '2px solid #ddd';
+                canvas.style.background = 'white';
+                
+                const downloadBtn = document.createElement('button');
+                downloadBtn.textContent = 'Download';
+                downloadBtn.onclick = () => {
+                    const link = document.createElement('a');
+                    link.download = name.split(' ')[0];
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                };
+                
+                preview.appendChild(canvas);
+                preview.appendChild(downloadBtn);
+                
+                container.appendChild(title);
+                container.appendChild(preview);
+                output.appendChild(container);
+            });
+
+            // Add instructions for ICO conversion
+            const instructions = document.createElement('div');
+            instructions.className = 'info';
+            instructions.innerHTML = `
+                <h3>📝 Final Step: Convert to .ico</h3>
+                <p><strong>Option 1:</strong> Use an online converter:</p>
+                <ul>
+                    <li><a href="https://convertio.co/png-ico/" target="_blank">Convertio PNG to ICO</a></li>
+                    <li><a href="https://www.favicon-generator.org/" target="_blank">Favicon Generator</a></li>
+                    <li><a href="https://favicon.io/favicon-converter/" target="_blank">Favicon.io Converter</a></li>
+                </ul>
+                <p>Upload the 32x32 PNG and download as <strong>favicon.ico</strong></p>
+                <p><strong>Option 2:</strong> Just rename favicon-32x32.png to favicon.ico (works in most modern browsers)</p>
+            `;
+            output.appendChild(instructions);
+        }
+
+        // Auto-generate on load
+        window.onload = () => {
+            const img = document.getElementById('originalImg');
+            img.onload = () => {
+                setTimeout(generateFavicons, 500);
+            };
+            // If already loaded
+            if (img.complete) {
+                setTimeout(generateFavicons, 500);
+            }
+        };
+    </script>
+</body>
+</html>

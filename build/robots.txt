@@ -1,0 +1,7 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Disallow: /logo-generator.html
+Disallow: /favicon-converter.html
+
+Sitemap: https://instalatiisanitarearad.ro/sitemap.xml
